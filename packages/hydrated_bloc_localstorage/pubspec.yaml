@@ -1,0 +1,15 @@
+name: hydrated_bloc_localstorage
+description: A hydrated bloc implementation using localstorage for browser, desktop and mobile support
+# version: 1.0.0
+# homepage: https://www.example.com
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  hydrated_bloc: any
+  localstorage: any
+
+dev_dependencies:
+  pedantic: ^1.8.0
+  test: ^1.6.0
