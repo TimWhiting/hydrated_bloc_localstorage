@@ -19,7 +19,7 @@ class HydratedBlocLocalStorage implements HydratedStorage {
     if (_instance != null) {
       return _instance;
     }
-    final storage = LocalStorage('hydrated_bloc');
+    final storage = LocalStorage('hydrated_bloc.json');
     await storage.ready;
     _instance = HydratedBlocLocalStorage._(storage);
     return _instance;
