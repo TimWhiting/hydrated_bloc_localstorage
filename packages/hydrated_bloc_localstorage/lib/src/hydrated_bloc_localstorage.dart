@@ -8,6 +8,8 @@ import 'package:localstorage/localstorage.dart';
 class HydratedBlocLocalStorage implements HydratedStorage {
   static HydratedBlocLocalStorage _instance;
 
+  LocalStorage _storage;
+
   /// Returns an instance of [HydratedBlocLocalStorage].
   /// [storageDirectory] can optionally be provided.
   /// By default, [Directory.current] is used.
@@ -17,45 +19,47 @@ class HydratedBlocLocalStorage implements HydratedStorage {
     if (_instance != null) {
       return _instance;
     }
-
-    _instance = HydratedBlocLocalStorage._();
+    final storage = LocalStorage('hydrated_bloc');
+    await storage.ready;
+    _instance = HydratedBlocLocalStorage._(storage);
     return _instance;
   }
 
-  HydratedBlocLocalStorage._();
+  HydratedBlocLocalStorage._(this._storage);
 
   @override
   Future<void> clear() async {
-    if (_box.isOpen) {
+    if (await _storage.ready) {
       _instance = null;
-      return await _box.deleteFromDisk();
+      await _storage.clear();
+      return await _storage.dispose();
     } else {
       return null;
     }
   }
 
   @override
-  Future<void> delete(String key) {
-    if (_box.isOpen) {
-      return _box.delete(key);
+  Future<void> delete(String key) async {
+    if (await _storage.ready) {
+      return _storage.deleteItem(key);
     } else {
       return null;
     }
   }
 
   @override
-  dynamic read(String key) {
-    if (_box.isOpen) {
-      return _box.get(key);
+  dynamic read(String key) async {
+    if (await _storage.ready) {
+      return _storage.getItem(key);
     } else {
       return null;
     }
   }
 
   @override
-  Future<void> write(String key, dynamic value) {
-    if (_box.isOpen) {
-      return _box.put(key, value);
+  Future<void> write(String key, dynamic value) async {
+    if (await _storage.ready) {
+      return _storage.setItem(key, value);
     } else {
       return null;
     }
