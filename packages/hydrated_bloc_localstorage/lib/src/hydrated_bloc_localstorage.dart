@@ -29,40 +29,22 @@ class HydratedBlocLocalStorage implements HydratedStorage {
 
   @override
   Future<void> clear() async {
-    if (await _storage.ready) {
-      _instance = null;
-      await _storage.clear();
-      return await _storage.dispose();
-    } else {
-      return null;
-    }
+    await _storage.clear();
   }
 
   @override
   Future<void> delete(String key) async {
-    if (await _storage.ready) {
-      return _storage.deleteItem(key);
-    } else {
-      return null;
-    }
+    return await _storage.deleteItem(key);
   }
 
   @override
-  dynamic read(String key) async {
-    if (await _storage.ready) {
-      return _storage.getItem(key);
-    } else {
-      return null;
-    }
+  dynamic read(String key) {
+    return _storage.getItem(key);
   }
 
   @override
   Future<void> write(String key, dynamic value) async {
-    if (await _storage.ready) {
-      return _storage.setItem(key, value);
-    } else {
-      return null;
-    }
+    return await _storage.setItem(key, value);
   }
 }
 
