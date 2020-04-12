@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:bloc/bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:localstorage/localstorage.dart';
 
@@ -58,4 +58,27 @@ class HydratedBlocLocalStorageDelegate extends HydratedBlocDelegate {
   /// optionally using the [storageDirectory] parameter
   static Future<HydratedBlocLocalStorageDelegate> build({Directory storageDirectory}) async =>
       HydratedBlocLocalStorageDelegate(await HydratedBlocLocalStorage.getInstance(storageDirectory: storageDirectory));
+}
+
+abstract class HydratedBlocHelper<A, S> extends HydratedBloc<A, S> {
+  final HydratedStorage storage = (BlocSupervisor.delegate as HydratedBlocDelegate).storage;
+  final int _id;
+  @override
+  String get id => '$_id';
+  HydratedBlocHelper(this._id) : super();
+
+  dynamic readState(String key) {
+    return storage.read('\$$id' + key);
+  }
+
+  Future<void> saveState(String key, dynamic value) {
+    return storage.write('\$$id' + key, value);
+  }
+
+  Future<void> deleteState(String key) async {
+    return storage.delete('\$$id' + key);
+  }
+
+  /// Warning, this will delete all state from all [HydratedBloc]s regardless of [id]
+  Future<void> clearState() => storage.clear();
 }
